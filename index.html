@@ -1,0 +1,967 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Las medias de los flamencos - 5° Paula Albarracín</title>
+<style>
+:root {
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  color: #24483c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg,#b9ebd1,#ecf9d1);
+}
+header {
+  background: #145c50;
+  color: white;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+header strong { font-size: clamp(15px,2.5vw,22px); }
+.status { display:flex; align-items:center; gap:10px; }
+#hearts { font-size:25px; }
+main { max-width:1000px; margin:auto; padding:16px; }
+.topline {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px;
+}
+.progress {
+  flex:1;
+  height:17px;
+  border-radius:30px;
+  background:#d3e7d6;
+  overflow:hidden;
+}
+#bar {
+  width:0%;
+  height:100%;
+  background:#ffb13c;
+  transition:width .4s;
+}
+.pill {
+  padding:9px 13px;
+  border-radius:25px;
+  background:#d9f5df;
+  font-weight:bold;
+}
+.scene {
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  padding:35px 18px;
+  min-height:260px;
+  border:6px solid white;
+  border-radius:28px;
+  background:linear-gradient(
+    #a2e7ef 0%,
+    #b7ebed 45%,
+    #80cd8d 45%,
+    #62bd79 74%,
+    #359b85 74%
+  );
+  box-shadow:0 12px 25px #175b4930;
+}
+.scene > * { position:relative; }
+.animals {
+  font-size:clamp(40px,8vw,78px);
+  animation:flotar 2s ease-in-out infinite alternate;
+}
+@keyframes flotar {
+  to { transform:translateY(-12px); }
+}
+h1 {
+  font-size:clamp(25px,5vw,44px);
+  color:#125448;
+  text-shadow:1px 2px white;
+}
+h2 { color:#14594c; }
+.panel {
+  margin:20px 0;
+  padding:22px;
+  background:#fffef4;
+  border-radius:24px;
+  box-shadow:0 6px 20px #18543c22;
+}
+button {
+  font-family:inherit;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.btn {
+  border:0;
+  border-radius:15px;
+  min-height:50px;
+  padding:12px 18px;
+  background:#ffb343;
+  color:#3b2917;
+  font-weight:900;
+  font-size:16px;
+  box-shadow:0 4px 0 #bc7828;
+}
+.btn:active { transform:translateY(2px); }
+.btn:disabled { opacity:.45; cursor:not-allowed; }
+.secondary {
+  background:#b9e6df;
+  box-shadow:0 4px 0 #74ada2;
+}
+.danger {
+  background:#ffd3c8;
+  box-shadow:0 4px 0 #c57e6c;
+}
+.buttons {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  margin:16px 0;
+}
+.cards {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.card {
+  border:3px solid transparent;
+  background:#edf9ef;
+  border-radius:18px;
+  padding:15px 8px;
+  min-height:130px;
+  font-size:16px;
+  font-weight:bold;
+}
+.card .emoji {
+  display:block;
+  font-size:48px;
+  margin-bottom:8px;
+}
+.card.selected {
+  background:#fff0ca;
+  border-color:#f4a12d;
+}
+.feedback {
+  text-align:center;
+  min-height:30px;
+  color:#155e50;
+  font-weight:bold;
+}
+.gridboard {
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:4px;
+  max-width:480px;
+  margin:20px auto;
+  padding:7px;
+  background:#316a54;
+  border-radius:15px;
+}
+.cell {
+  aspect-ratio:1;
+  background:#d5efb9;
+  border-radius:7px;
+  display:grid;
+  place-items:center;
+  font-size:clamp(20px,4vw,37px);
+}
+.cell.obstacle { background:#b5d09f; }
+.cell.goal { background:#ffe7a4; }
+.sequence {
+  border:2px dashed #86b2a1;
+  background:#f3f9f0;
+  border-radius:15px;
+  padding:15px;
+  min-height:60px;
+  text-align:center;
+  font-size:26px;
+  overflow-wrap:anywhere;
+}
+.arrow { font-size:27px; min-width:65px; }
+.matchrow {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  align-items:center;
+  margin:12px 0;
+}
+select {
+  width:100%;
+  min-height:48px;
+  padding:8px;
+  font-size:15px;
+  border-radius:12px;
+  border:2px solid #9bc6b2;
+}
+.pattern {
+  text-align:center;
+  font-size:clamp(27px,5vw,43px);
+  letter-spacing:5px;
+  padding:15px 0;
+}
+.dance {
+  display:inline-block;
+  font-size:90px;
+  transition:transform .25s;
+}
+.small { font-size:14px; color:#527064; }
+@media(max-width:550px) {
+  main { padding:10px; }
+  .panel { padding:15px; }
+  .cards { grid-template-columns:repeat(2,1fr); }
+  .matchrow { grid-template-columns:1fr; }
+  .scene { padding:25px 12px; }
+  .btn { padding:11px 13px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <strong>🦩 LAS MEDIAS DE LOS FLAMENCOS · 5° PAULA ALBARRACÍN</strong>
+  <div class="status">
+    <span id="hearts">❤️❤️❤️</span>
+    <button class="btn secondary" id="sound">🔊</button>
+    <button class="btn danger" id="reset">REINICIAR</button>
+  </div>
+</header>
+
+<main>
+  <div class="topline">
+    <span class="pill" id="missionTag">AVENTURA</span>
+    <div class="progress"><div id="bar"></div></div>
+    <span id="count">0/4</span>
+  </div>
+  <div id="app"></div>
+</main>
+
+<script>
+"use strict";
+
+const KEY = "flamencos-paula-juego-v2";
+const app = document.getElementById("app");
+
+let state = {
+  mission: 0,
+  lives: 3,
+  completed: 0
+};
+
+let sound = true;
+let locked = false;
+let sequence = [];
+let position = [0,0];
+let selected = new Set();
+let danceStage = 0;
+let danceSequence = [];
+
+const icons = {
+  up:"↑", down:"↓", left:"←", right:"→"
+};
+
+const moves = {
+  up:[-1,0],
+  down:[1,0],
+  left:[0,-1],
+  right:[0,1]
+};
+
+const obstacles = new Set([
+  "0,2","1,1","1,2","1,4",
+  "2,4","3,0","3,2","3,4",
+  "4,2","4,4","5,1"
+]);
+
+const animals = [
+  ["🦩","FLAMENCOS",true],
+  ["🐍","VÍBORAS",true],
+  ["🐸","SAPOS",true],
+  ["🐊","YACARÉS",true],
+  ["🦁","LEONES",false],
+  ["🐘","ELEFANTES",false]
+];
+
+function save() {
+  try {
+    localStorage.setItem(KEY,JSON.stringify(state));
+  } catch(e) {}
+}
+
+try {
+  const stored = JSON.parse(localStorage.getItem(KEY));
+  if (
+    stored &&
+    Number.isInteger(stored.mission) &&
+    stored.mission >= 0 &&
+    stored.mission <= 5 &&
+    stored.lives >= 1 &&
+    stored.lives <= 3 &&
+    stored.completed >= 0 &&
+    stored.completed <= 4
+  ) {
+    state = stored;
+  }
+} catch(e) {}
+
+function beep(correct=true) {
+  if (!sound) return;
+  try {
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
+    const ctx = new AudioContextClass();
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+    oscillator.frequency.value = correct ? 660 : 180;
+    gain.gain.value = .08;
+    oscillator.start();
+    oscillator.stop(ctx.currentTime+.16);
+    oscillator.onended = () => ctx.close();
+  } catch(e) {}
+}
+
+function hud() {
+  document.getElementById("hearts").textContent =
+    "❤️".repeat(state.lives) +
+    "🖤".repeat(3-state.lives);
+
+  document.getElementById("missionTag").textContent =
+    state.mission === 0 ? "INICIO" :
+    state.mission === 5 ? "FINAL" :
+    "MISIÓN " + state.mission + " DE 4";
+
+  document.getElementById("bar").style.width =
+    (state.completed/4*100)+"%";
+
+  document.getElementById("count").textContent =
+    state.completed+"/4";
+
+  document.getElementById("sound").textContent =
+    sound ? "🔊" : "🔇";
+}
+
+function feedback(message) {
+  const element = document.getElementById("feedback");
+  if(element) element.textContent = message;
+}
+
+function fail(message="¡INTENTÁ NUEVAMENTE!") {
+  if(locked) return;
+
+  state.lives--;
+  beep(false);
+  save();
+  hud();
+
+  if(state.lives <= 0) {
+    locked = true;
+    app.innerHTML = `
+      <section class="panel" style="text-align:center">
+        <h1>💔 ¡NO TE RINDAS!</h1>
+        <p>PERDISTE TUS TRES VIDAS.</p>
+        <p>¡PODÉS VOLVER A INTENTARLO!</p>
+        <button class="btn" id="again">
+          VOLVER A EMPEZAR
+        </button>
+      </section>
+    `;
+    document.getElementById("again").onclick = resetGame;
+  } else {
+    feedback(message+" TE QUEDAN "+state.lives+" VIDAS.");
+  }
+}
+
+function success(message) {
+  locked = true;
+  beep();
+
+  app.innerHTML = `
+    <section class="scene">
+      <div class="animals">🦩✨🎉</div>
+      <h1>¡MISIÓN SUPERADA!</h1>
+      <h2>${message}</h2>
+      <button class="btn" id="next">
+        CONTINUAR ➜
+      </button>
+    </section>
+  `;
+
+  document.getElementById("next").onclick = () => {
+    state.completed = Math.max(state.completed,state.mission);
+    state.mission++;
+    save();
+    locked = false;
+    render();
+  };
+}
+
+function resetGame() {
+  state = {mission:0,lives:3,completed:0};
+  locked = false;
+  save();
+  render();
+}
+
+document.getElementById("reset").onclick = () => {
+  if(confirm("¿QUERÉS BORRAR EL PROGRESO Y EMPEZAR DE NUEVO?")) {
+    resetGame();
+  }
+};
+
+document.getElementById("sound").onclick = () => {
+  sound = !sound;
+  hud();
+  if(sound) beep();
+};
+
+function render() {
+  hud();
+
+  if(state.mission === 0) {
+    app.innerHTML = `
+      <section class="scene">
+        <div class="animals">🌴🦩🐍🐸🦉🌴</div>
+        <h1>LAS MEDIAS DE LOS FLAMENCOS</h1>
+        <h2>DE 5° DEL PAULA ALBARRACÍN</h2>
+        <p><b>UNA AVENTURA DE LECTURA, LÓGICA Y PROGRAMACIÓN</b></p>
+        <p>LEN + ROBÓTICA Y ED. DIGITAL</p>
+        <button class="btn" id="start">
+          ¡COMENZAR LA AVENTURA!
+        </button>
+      </section>
+      <section class="panel">
+        <h2>🗺️ TU CAMINO</h2>
+        <p>🔒 MISIÓN 1: LA FIESTA</p>
+        <p>🔒 MISIÓN 2: EL CAMINO</p>
+        <p>🔒 MISIÓN 3: LAS MEDIAS</p>
+        <p>🔒 MISIÓN 4: EL BAILE</p>
+        <p class="small">TENÉS TRES VIDAS PARA COMPLETAR LA AVENTURA.</p>
+      </section>
+    `;
+
+    document.getElementById("start").onclick = () => {
+      state.mission = 1;
+      save();
+      render();
+    };
+  }
+  else if(state.mission === 1) mission1();
+  else if(state.mission === 2) mission2();
+  else if(state.mission === 3) mission3();
+  else if(state.mission === 4) mission4();
+  else finalScreen();
+}
+
+/* MISIÓN 1 */
+
+function mission1() {
+  selected = new Set();
+
+  app.innerHTML = `
+    <section class="scene">
+      <div class="animals">🐍🎉🦩🐸🐊</div>
+      <h1>MISIÓN 1: ¡UNA FIESTA EN LA SELVA!</h1>
+      <p>SELECCIONÁ LOS CUATRO ANIMALES DEL CUENTO.</p>
+    </section>
+    <section class="panel" id="work">
+      <div class="cards" id="animalCards"></div>
+      <div class="buttons">
+        <button class="btn" id="check">COMPROBAR</button>
+      </div>
+      <p class="feedback" id="feedback"></p>
+    </section>
+  `;
+
+  document.getElementById("animalCards").innerHTML =
+    animals.map((animal,i) => `
+      <button class="card" data-animal="${i}">
+        <span class="emoji">${animal[0]}</span>
+        ${animal[1]}
+      </button>
+    `).join("");
+
+  document.querySelectorAll("[data-animal]").forEach(button => {
+    button.onclick = () => {
+      const i = Number(button.dataset.animal);
+      if(selected.has(i)) selected.delete(i);
+      else selected.add(i);
+      button.classList.toggle("selected",selected.has(i));
+    };
+  });
+
+  document.getElementById("check").onclick = () => {
+    const correct =
+      selected.size === 4 &&
+      [...selected].every(i => animals[i][2]);
+
+    if(!correct) {
+      fail("REVISÁ QUÉ ANIMALES PARTICIPAN DEL CUENTO.");
+      return;
+    }
+
+    beep();
+    showMatches();
+  };
+}
+
+function showMatches() {
+  const pairs = [
+    ["🦩 FLAMENCOS","BUSCAN MEDIAS PARA LA FIESTA"],
+    ["🐍 VÍBORAS","ORGANIZAN LA FIESTA"],
+    ["🦉 LECHUZA","ENTREGA LAS MEDIAS MISTERIOSAS"]
+  ];
+
+  const options = pairs.map(p => p[1]);
+
+  document.getElementById("work").innerHTML = `
+    <h2>RELACIONÁ LOS PERSONAJES</h2>
+    <p>ELEGÍ LA CARACTERÍSTICA CORRECTA.</p>
+    <div id="matches"></div>
+    <div class="buttons">
+      <button class="btn" id="checkMatch">COMPROBAR</button>
+    </div>
+    <p class="feedback" id="feedback"></p>
+  `;
+
+  document.getElementById("matches").innerHTML =
+    pairs.map((pair,i) => `
+      <div class="matchrow">
+        <b>${pair[0]}</b>
+        <select data-match="${i}">
+          <option value="-1">ELEGÍ UNA OPCIÓN</option>
+          ${options.map((option,j) => `
+            <option value="${j}">${option}</option>
+          `).join("")}
+        </select>
+      </div>
+    `).join("");
+
+  document.getElementById("checkMatch").onclick = () => {
+    const correct = [...document.querySelectorAll("[data-match]")]
+      .every((select,i) => Number(select.value) === i);
+
+    if(correct) {
+      success("¡EXCELENTE! YA CONOCÉS A LOS INVITADOS DE LA FIESTA.");
+    } else {
+      fail("REVISÁ LAS RELACIONES ENTRE PERSONAJES.");
+    }
+  };
+}
+
+/* MISIÓN 2 */
+
+function mission2() {
+  sequence = [];
+  position = [0,0];
+
+  app.innerHTML = `
+    <section class="scene">
+      <div class="animals">🦩🌳🦉🏪</div>
+      <h1>MISIÓN 2: LOS FLAMENCOS BUSCAN SUS MEDIAS</h1>
+      <p>PROGRAMÁ EL CAMINO HASTA EL ALMACÉN.</p>
+      <p>¡EVITÁ LOS OBSTÁCULOS!</p>
+    </section>
+    <section class="panel">
+      <div id="board" class="gridboard"></div>
+      <p style="text-align:center">
+        🦩 INICIO · 🏪 META · 🌳🪨💧 OBSTÁCULOS
+      </p>
+      <h2>MI SECUENCIA</h2>
+      <div class="sequence" id="sequence">
+        TOCÁ LAS FLECHAS PARA PROGRAMAR
+      </div>
+      <div class="buttons" id="arrows"></div>
+      <div class="buttons">
+        <button class="btn" id="run">▶ EJECUTAR</button>
+        <button class="btn secondary" id="erase">BORRAR ÚLTIMA</button>
+        <button class="btn danger" id="clear">REINICIAR SECUENCIA</button>
+      </div>
+      <p class="feedback" id="feedback"></p>
+    </section>
+  `;
+
+  document.getElementById("arrows").innerHTML =
+    Object.entries(icons).map(([key,value]) => `
+      <button class="btn secondary arrow" data-dir="${key}">
+        ${value}
+      </button>
+    `).join("");
+
+  document.querySelectorAll("[data-dir]").forEach(button => {
+    button.onclick = () => {
+      if(locked) return;
+      sequence.push(button.dataset.dir);
+      drawSequence();
+    };
+  });
+
+  document.getElementById("erase").onclick = () => {
+    if(locked) return;
+    sequence.pop();
+    drawSequence();
+  };
+
+  document.getElementById("clear").onclick = () => {
+    if(locked) return;
+    sequence = [];
+    position = [0,0];
+    drawSequence();
+    drawBoard();
+  };
+
+  document.getElementById("run").onclick = runMaze;
+  drawBoard();
+}
+
+function drawSequence() {
+  document.getElementById("sequence").textContent =
+    sequence.length
+      ? sequence.map(dir => icons[dir]).join(" ")
+      : "TOCÁ LAS FLECHAS PARA PROGRAMAR";
+}
+
+function drawBoard() {
+  let html = "";
+
+  for(let row=0;row<6;row++) {
+    for(let col=0;col<6;col++) {
+      const key = row+","+col;
+      const wall = obstacles.has(key);
+      const goal = row===5 && col===5;
+      const here = position[0]===row && position[1]===col;
+
+      let symbol = "";
+      if(here) symbol = "🦩";
+      else if(goal) symbol = "🏪";
+      else if(wall) {
+        symbol = ["🌳","🪨","💧"][(row+col)%3];
+      }
+
+      html += `
+        <div class="cell ${wall?"obstacle":""} ${goal?"goal":""}">
+          ${symbol}
+        </div>
+      `;
+    }
+  }
+
+  document.getElementById("board").innerHTML = html;
+}
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve,ms));
+}
+
+async function runMaze() {
+  if(locked || sequence.length===0) return;
+
+  locked = true;
+  const controls = document.querySelectorAll(
+    "#arrows button,#run,#erase,#clear"
+  );
+  controls.forEach(button => button.disabled=true);
+
+  position = [0,0];
+  drawBoard();
+  let crashed = false;
+
+  for(const dir of sequence) {
+    await wait(350);
+
+    const delta = moves[dir];
+    const nextRow = position[0]+delta[0];
+    const nextCol = position[1]+delta[1];
+
+    if(
+      nextRow<0 || nextRow>5 ||
+      nextCol<0 || nextCol>5 ||
+      obstacles.has(nextRow+","+nextCol)
+    ) {
+      crashed = true;
+      break;
+    }
+
+    position = [nextRow,nextCol];
+    drawBoard();
+
+    if(nextRow===5 && nextCol===5) break;
+  }
+
+  locked = false;
+
+  if(position[0]===5 && position[1]===5) {
+    success("¡MUY BIEN! PROGRAMASTE EL CAMINO CORRECTAMENTE.");
+    return;
+  }
+
+  if(crashed) {
+    fail("¡CUIDADO! CHOCASTE CON UN OBSTÁCULO.");
+  } else {
+    feedback("TODAVÍA NO LLEGASTE. AGREGÁ MÁS FLECHAS.");
+  }
+
+  if(state.lives>0) {
+    controls.forEach(button => button.disabled=false);
+    position = [0,0];
+    drawBoard();
+  }
+}
+
+/* MISIÓN 3 */
+
+function mission3() {
+  app.innerHTML = `
+    <section class="scene">
+      <div class="animals">🦉🏪🧦</div>
+      <h1>MISIÓN 3: LAS MEDIAS MISTERIOSAS</h1>
+      <p>DESCUBRÍ LAS MEDIAS DEL CUENTO.</p>
+    </section>
+    <section class="panel" id="work">
+      <h2>¿QUÉ MEDIAS LES ENTREGA LA LECHUZA?</h2>
+      <div class="cards">
+        <button class="card" data-sock="0">
+          <span class="emoji">🧦</span>
+          MEDIAS DE LANA AZUL
+        </button>
+        <button class="card" data-sock="1">
+          <span class="emoji">🐍🧦</span>
+          CUEROS DE VÍBORAS DE CORAL
+        </button>
+        <button class="card" data-sock="2">
+          <span class="emoji">🧦</span>
+          MEDIAS DE ALGODÓN VERDE
+        </button>
+      </div>
+      <p class="feedback" id="feedback"></p>
+    </section>
+  `;
+
+  document.querySelectorAll("[data-sock]").forEach(button => {
+    button.onclick = () => {
+      if(locked) return;
+
+      if(button.dataset.sock !== "1") {
+        fail("ESAS NO SON LAS MEDIAS DEL CUENTO.");
+        return;
+      }
+
+      beep();
+      questionOwl();
+    };
+  });
+}
+
+function questionOwl() {
+  document.getElementById("work").innerHTML = `
+    <h2>¿QUÉ DEBÍAN HACER LOS FLAMENCOS?</h2>
+    <p>RECORDÁ LA ADVERTENCIA DE LA LECHUZA.</p>
+    <div class="cards">
+      <button class="card" data-answer="0">
+        GUARDAR LAS MEDIAS EN UNA CAJA
+      </button>
+      <button class="card" data-answer="1">
+        BAILAR TODA LA NOCHE SIN PARAR
+      </button>
+      <button class="card" data-answer="2">
+        QUITARSE LAS MEDIAS ANTES DE BAILAR
+      </button>
+    </div>
+    <p class="feedback" id="feedback"></p>
+  `;
+
+  document.querySelectorAll("[data-answer]").forEach(button => {
+    button.onclick = () => {
+      if(locked) return;
+
+      if(button.dataset.answer==="1") {
+        success("¡FANTÁSTICO! DESCUBRISTE EL SECRETO DE LAS MEDIAS.");
+      } else {
+        fail("RECORDÁ LA ADVERTENCIA DE LA LECHUZA.");
+      }
+    };
+  });
+}
+
+/* MISIÓN 4 */
+
+const patterns = [
+  {sequence:["↑","→","↑","→","↑","❓"],answer:"→"},
+  {sequence:["←","↓","←","↓","←","❓"],answer:"↓"},
+  {sequence:["↑","↑","→","↑","↑","→","❓"],answer:"↑"}
+];
+
+function mission4() {
+  danceStage = 0;
+  danceSequence = [];
+
+  app.innerHTML = `
+    <section class="scene">
+      <div class="animals">🎶🐍🦩🎶</div>
+      <h1>MISIÓN 4: ¡A BAILAR!</h1>
+      <p>COMPLETÁ LOS PATRONES Y PROGRAMÁ EL BAILE.</p>
+    </section>
+    <section class="panel" id="work"></section>
+  `;
+
+  danceStep();
+}
+
+function danceStep() {
+  if(danceStage>=3) {
+    finalDance();
+    return;
+  }
+
+  const pattern = patterns[danceStage];
+
+  document.getElementById("work").innerHTML = `
+    <h2>PATRÓN ${danceStage+1} DE 3</h2>
+    <p>¿QUÉ FLECHA CONTINÚA LA SECUENCIA?</p>
+    <div class="pattern">${pattern.sequence.join(" ")}</div>
+    <div class="buttons">
+      ${["↑","↓","←","→"].map(arrow => `
+        <button class="btn secondary arrow" data-pick="${arrow}">
+          ${arrow}
+        </button>
+      `).join("")}
+    </div>
+    <div style="text-align:center">
+      <span class="dance" id="dancer">🦩</span>
+    </div>
+    <p class="feedback" id="feedback"></p>
+  `;
+
+  document.querySelectorAll("[data-pick]").forEach(button => {
+    button.onclick = async () => {
+      if(locked) return;
+
+      if(button.dataset.pick !== pattern.answer) {
+        fail("OBSERVÁ CÓMO SE REPITE EL PATRÓN.");
+        return;
+      }
+
+      locked = true;
+      beep();
+
+      const dancer = document.getElementById("dancer");
+      dancer.style.transform = "translateY(-25px) rotate(15deg)";
+      await wait(400);
+
+      danceStage++;
+      locked = false;
+      danceStep();
+    };
+  });
+}
+
+function finalDance() {
+  document.getElementById("work").innerHTML = `
+    <h2>🎵 ¡PROGRAMÁ TU PROPIO BAILE!</h2>
+    <p>ELEGÍ EXACTAMENTE OCHO FLECHAS.</p>
+    <div class="pattern" id="danceSeq">0 / 8</div>
+    <div class="buttons">
+      ${Object.entries(icons).map(([key,value]) => `
+        <button class="btn secondary arrow" data-dance="${key}">
+          ${value}
+        </button>
+      `).join("")}
+    </div>
+    <div class="buttons">
+      <button class="btn" id="danceRun">▶ EJECUTAR BAILE</button>
+      <button class="btn danger" id="danceClear">BORRAR</button>
+    </div>
+    <div style="text-align:center">
+      <span class="dance" id="dancer">🦩</span>
+    </div>
+    <p class="feedback" id="feedback"></p>
+  `;
+
+  function drawDance() {
+    document.getElementById("danceSeq").textContent =
+      danceSequence.map(dir => icons[dir]).join(" ") +
+      " ("+danceSequence.length+"/8)";
+  }
+
+  document.querySelectorAll("[data-dance]").forEach(button => {
+    button.onclick = () => {
+      if(locked || danceSequence.length>=8) return;
+      danceSequence.push(button.dataset.dance);
+      drawDance();
+    };
+  });
+
+  document.getElementById("danceClear").onclick = () => {
+    if(locked) return;
+    danceSequence = [];
+    drawDance();
+  };
+
+  document.getElementById("danceRun").onclick = async () => {
+    if(locked) return;
+
+    if(danceSequence.length!==8) {
+      feedback("NECESITÁS OCHO MOVIMIENTOS.");
+      return;
+    }
+
+    locked = true;
+    document.querySelectorAll("#work button").forEach(button => {
+      button.disabled = true;
+    });
+
+    const dancer = document.getElementById("dancer");
+
+    for(const dir of danceSequence) {
+      const transformations = {
+        left:"translateX(-30px) rotate(-15deg)",
+        right:"translateX(30px) rotate(15deg)",
+        up:"translateY(-30px)",
+        down:"translateY(20px)"
+      };
+
+      dancer.style.transform = transformations[dir];
+      beep();
+      await wait(340);
+      dancer.style.transform = "";
+      await wait(120);
+    }
+
+    locked = false;
+    success("¡INCREÍBLE! LOS FLAMENCOS BAILARON SIGUIENDO TU PROGRAMACIÓN.");
+  };
+}
+
+/* PANTALLA FINAL */
+
+function finalScreen() {
+  app.innerHTML = `
+    <section class="scene">
+      <div class="animals">🦩🎊🏆🦩</div>
+      <h1>¡FELICITACIONES!</h1>
+      <h2>SUPERASTE LAS CUATRO MISIONES</h2>
+      <p><b>¡DESCUBRISTE EL MISTERIO DE LAS MEDIAS DE LOS FLAMENCOS!</b></p>
+      <p>5° · PAULA ALBARRACÍN</p>
+      <button class="btn" id="again">
+        VOLVER A LA AVENTURA
+      </button>
+    </section>
+  `;
+
+  document.getElementById("again").onclick = resetGame;
+}
+
+/* INICIAR EL VIDEOJUEGO */
+render();
+
+</script>
+</body>
+</html>
